@@ -3,7 +3,7 @@ import express from "express" // We need to import express to use it's functiona
 import { fileURLToPath } from "url" // it's core module to localize the current file path
 import { dirname, join } from "path" // core modules, dirname will localize the directory name, join will join directory with json file name
 import fs from "fs" // core module, will enable to read or write the json file at the particular path
-import uniqueid from "uniqueid" // will generate a unique ID for the authors
+import uniqid from "uniqid" // will generate a unique ID for the authors
 
 const authorsRouter = express.Router() // Here we use Router express functionality to provide Routing to the server
 
@@ -19,7 +19,7 @@ const authorsJSONPath = join(currentDirPath, "authors.json")
 authorsRouter.post("/", (req, res) => {
   console.log(req.body) // remember to add server.use(express.json()) to the server file
   //1. read the requests body
-  const newAuthor = { ...req.body, ID: uniqueid, createdAT: new Date() }
+  const newAuthor = { ...req.body, ID: uniqid(), createdAT: new Date() }
   //2. read the the content of authors.json
   const authors = JSON.parse(fs.readFileSync(authorsJSONPath))
   //3. push new author to the array
@@ -31,11 +31,21 @@ authorsRouter.post("/", (req, res) => {
 })
 
 authorsRouter.get("/", (req, res) => {
-  res.send(req.method)
+  //1. read the json file
+  const authors = JSON.parse(fs.readFileSync(authorsJSONPath))
+
+  //2. send back an array
+  res.send(authors)
 })
 
 authorsRouter.get("/:ID", (req, res) => {
-  res.send(req.method + " single")
+  //1. get an array of authors
+  const authors = JSON.parse(fs.readFileSync(authorsJSONPath))
+  //2. find the author with the specified ID
+  const paramsID = req.params.ID // get the ID specified in tge params
+  const author = authors.find((auth) => auth.ID === paramsID)
+  //3. send the author back as a response
+  res.send(author)
 })
 
 authorsRouter.put("/:ID", (req, res) => {

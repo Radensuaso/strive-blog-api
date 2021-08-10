@@ -1,1 +1,20 @@
-[{"name":"André","surname":"Sousa","email":"andrels@strive.com","birthDate":"03/08/92","avatar":"https://media-exp1.licdn.com/dms/image/C4E03AQENW0XfZyGAqA/profile-displayphoto-shrink_800_800/0/1625390568276?e=1634169600&v=beta&t=sLFHjxKHA4VxepTrSTuLh8mo_Ar0MlUrhVIZjBk0TFA","createdAT":"2021-08-10T14:14:42.834Z"}]
+[
+  {
+    "name": "André",
+    "surname": "Sousa",
+    "email": "andrels@strive.com",
+    "birthDate": "03/08/92",
+    "avatar": "https://media-exp1.licdn.com/dms/image/C4E03AQENW0XfZyGAqA/profile-displayphoto-shrink_800_800/0/1625390568276?e=1634169600&v=beta&t=sLFHjxKHA4VxepTrSTuLh8mo_Ar0MlUrhVIZjBk0TFA",
+    "ID": "1",
+    "createdAT": "2021-08-10T14:14:42.834Z"
+  },
+  {
+    "name": "Luis",
+    "surname": "Miguel",
+    "email": "luis-miguel@strive.com",
+    "birthDate": "03/08/92",
+    "avatar": "https://avataaars.io/?avatarStyle=Circle&topType=ShortHairShortRound&accessoriesType=Prescription02&hairColor=Red&facialHairType=MoustacheFancy&facialHairColor=BlondeGolden&clotheType=BlazerShirt&eyeType=Happy&eyebrowType=SadConcernedNatural&mouthType=Grimace&skinColor=Yellow",
+    "ID": "qd3vy19isks66eyir",
+    "createdAT": "2021-08-10T14:46:00.002Z"
+  }
+]

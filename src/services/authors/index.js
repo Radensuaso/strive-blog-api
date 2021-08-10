@@ -21,7 +21,7 @@ authorsRouter.post("/", (req, res) => {
   //1. read the requests body
   const newAuthor = { ...req.body, ID: uniqid(), createdAT: new Date() }
   //2. read the the content of authors.json
-  const authors = JSON.parse(fs.readFileSync(authorsJSONPath))
+  const authors = JSON.parse(fs.readFileSync(authorsJSONPath)) // must be parsed in every endpoint
   //3. push new author to the array
   authors.push(newAuthor)
   //4. Rewrite the new array to the json file
@@ -53,6 +53,14 @@ authorsRouter.put("/:ID", (req, res) => {
 })
 
 authorsRouter.delete("/:ID", (req, res) => {
+  // 1. read students.json file content
+  const authors = JSON.parse(fs.readFileSync(authorsJSONPath))
+  //2.filter out every author that isn't the id of the params
+  const paramsID = req.params.ID
+  const remainingAuthors = authors.filter((auth) => auth.ID !== paramsID)
+  //3. write the remaining authors back to json file
+  fs.writeFileSync(authorsJSONPath, JSON.stringify(remainingAuthors))
+  //4.send back response
   res.status(204).send(req.method)
 })
 

@@ -11,10 +11,19 @@
   {
     "name": "Gertrudes",
     "surname": "Mendonça",
-    "email": "gertrudes-silva@strive.com",
+    "email": "gertrudes-mendonca@strive.com",
     "birthDate": "04/08/50",
     "avatar": "https://avataaars.io/?avatarStyle=Circle&topType=LongHairMiaWallace&accessoriesType=Wayfarers&hairColor=Black&facialHairType=MoustacheFancy&facialHairColor=Blonde&clotheType=ShirtScoopNeck&clotheColor=Black&eyeType=WinkWacky&eyebrowType=UpDown&mouthType=ScreamOpen&skinColor=Tanned",
     "ID": "qd3vy14rwks682llt",
     "createdAT": "2021-08-10T15:32:22.624Z"
+  },
+  {
+    "name": "Gertrudes",
+    "surname": "Silva",
+    "email": "gertrudes4ever@strive.com",
+    "birthDate": "04/08/80",
+    "avatar": "https://avataaars.io/?avatarStyle=Circle&topType=LongHairMiaWallace&accessoriesType=Wayfarers&hairColor=Black&facialHairType=MoustacheFancy&facialHairColor=Blonde&clotheType=ShirtScoopNeck&clotheColor=Black&eyeType=WinkWacky&eyebrowType=UpDown&mouthType=ScreamOpen&skinColor=Tanned",
+    "ID": "qd3vy2e8ks6akofv",
+    "createdAT": "2021-08-10T16:42:25.339Z"
   }
 ]

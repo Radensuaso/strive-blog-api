@@ -17,17 +17,23 @@ const currentDirPath = dirname(currentFilePath)
 const authorsJSONPath = join(currentDirPath, "authors.json")
 
 authorsRouter.post("/", (req, res) => {
-  console.log(req.body) // remember to add server.use(express.json()) to the server file
+  // remember to add server.use(express.json()) to the server file
   //1. read the requests body
   const newAuthor = { ...req.body, ID: uniqid(), createdAT: new Date() }
   //2. read the the content of authors.json
   const authors = JSON.parse(fs.readFileSync(authorsJSONPath)) // must be parsed in every endpoint
-  //3. push new author to the array
-  authors.push(newAuthor)
-  //4. Rewrite the new array to the json file
-  fs.writeFileSync(authorsJSONPath, JSON.stringify(authors))
-  //5. send back the the ID as response
-  res.status(201).send({ ID: newAuthor.ID })
+
+  const checkEmail = authors.every((auth) => auth.email !== newAuthor.email) // check if every email is different from the one sent
+  if (checkEmail) {
+    //3. push new author to the array
+    authors.push(newAuthor)
+    //4. Rewrite the new array to the json file
+    fs.writeFileSync(authorsJSONPath, JSON.stringify(authors))
+    //5. send back the the ID as response
+    res.status(201).send({ ID: newAuthor.ID })
+  } else {
+    res.status(409).send("The email already exists")
+  }
 })
 
 authorsRouter.get("/", (req, res) => {
@@ -53,20 +59,29 @@ authorsRouter.put("/:ID", (req, res) => {
   const authors = JSON.parse(fs.readFileSync(authorsJSONPath))
   //2. find specific author
   const paramsID = req.params.ID // get the ID specified in tge params
-  const authorToEdit = authors.find((auth) => auth.ID === paramsID)
+  const authorToUpdate = authors.find((auth) => auth.ID === paramsID)
   //2.  edit the specific author and add it to remaing authors
   const remainingAuthors = authors.filter((auth) => auth.ID !== paramsID)
   const updatedAuthor = {
     ...req.body,
-    ID: authorToEdit.ID,
-    createdAT: authorToEdit.createdAT,
+    ID: authorToUpdate.ID,
+    createdAT: authorToUpdate.createdAT,
   }
 
-  remainingAuthors.push(updatedAuthor)
-  //3. write on the json file the updated authors
-  fs.writeFileSync(authorsJSONPath, JSON.stringify(remainingAuthors))
-  //4. Send back proper response
-  res.send(updatedAuthor)
+  // check if every email is different from the one sent
+  const checkEmail = remainingAuthors.every(
+    (auth) => auth.email !== updatedAuthor.email
+  )
+
+  if (checkEmail) {
+    remainingAuthors.push(updatedAuthor)
+    //3. write on the json file the updated authors
+    fs.writeFileSync(authorsJSONPath, JSON.stringify(remainingAuthors))
+    //4. Send back proper response
+    res.send(updatedAuthor)
+  } else {
+    res.status(409).send("The email already exists")
+  }
 })
 
 authorsRouter.delete("/:ID", (req, res) => {

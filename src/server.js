@@ -7,7 +7,7 @@ const server = express() //our server function initialized with express()
 const port = 3001 // this will be the port on with the server will run
 
 server.use(cors())
-server.use(express.json()) // this will enable reading of the bodies of requests
+server.use(express.json()) // this will enable reading of the bodies of requests, THIS HAS TO BE BEFORE server.use("/authors", authorsRouter)
 
 // ========== ROUTES =============
 

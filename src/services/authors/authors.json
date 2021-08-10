@@ -1,1 +1,20 @@
-[{"name":"Luis","surname":"Miguel","email":"luis-miguel@strive.com","birthDate":"03/08/92","avatar":"https://avataaars.io/?avatarStyle=Circle&topType=ShortHairShortRound&accessoriesType=Prescription02&hairColor=Red&facialHairType=MoustacheFancy&facialHairColor=BlondeGolden&clotheType=BlazerShirt&eyeType=Happy&eyebrowType=SadConcernedNatural&mouthType=Grimace&skinColor=Yellow","ID":"qd3vy19isks66eyir","createdAT":"2021-08-10T14:46:00.002Z"}]
+[
+  {
+    "name": "Hercules",
+    "surname": "Gomes",
+    "email": "hercules-gomes@strive.com",
+    "birthDate": "04/08/90",
+    "avatar": "https://avataaars.io/?avatarStyle=Circle&topType=Hat&accessoriesType=Round&hairColor=PastelPink&facialHairType=Blank&clotheType=CollarSweater&clotheColor=PastelYellow&eyeType=Happy&eyebrowType=SadConcernedNatural&mouthType=Smile&skinColor=Yellow",
+    "ID": "qd3vypukks692s7u",
+    "createdAT": "2021-08-10T16:00:30.809Z"
+  },
+  {
+    "name": "Gertrudes",
+    "surname": "Mendonça",
+    "email": "gertrudes-silva@strive.com",
+    "birthDate": "04/08/50",
+    "avatar": "https://avataaars.io/?avatarStyle=Circle&topType=LongHairMiaWallace&accessoriesType=Wayfarers&hairColor=Black&facialHairType=MoustacheFancy&facialHairColor=Blonde&clotheType=ShirtScoopNeck&clotheColor=Black&eyeType=WinkWacky&eyebrowType=UpDown&mouthType=ScreamOpen&skinColor=Tanned",
+    "ID": "qd3vy14rwks682llt",
+    "createdAT": "2021-08-10T15:32:22.624Z"
+  }
+]

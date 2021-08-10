@@ -49,7 +49,24 @@ authorsRouter.get("/:ID", (req, res) => {
 })
 
 authorsRouter.put("/:ID", (req, res) => {
-  res.send(req.method)
+  // 1. read students.json file content
+  const authors = JSON.parse(fs.readFileSync(authorsJSONPath))
+  //2. find specific author
+  const paramsID = req.params.ID // get the ID specified in tge params
+  const authorToEdit = authors.find((auth) => auth.ID === paramsID)
+  //2.  edit the specific author and add it to remaing authors
+  const remainingAuthors = authors.filter((auth) => auth.ID !== paramsID)
+  const updatedAuthor = {
+    ...req.body,
+    ID: authorToEdit.ID,
+    createdAT: authorToEdit.createdAT,
+  }
+
+  remainingAuthors.push(updatedAuthor)
+  //3. write on the json file the updated authors
+  fs.writeFileSync(authorsJSONPath, JSON.stringify(remainingAuthors))
+  //4. Send back proper response
+  res.send(updatedAuthor)
 })
 
 authorsRouter.delete("/:ID", (req, res) => {

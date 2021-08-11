@@ -41,7 +41,7 @@ blogPostsRouter.get("/:_id", (req, res, next) => {
       res.send(post)
     } else {
       res.send(
-        createHttpError(404, `Post with the id:${req.params._id} not found.`)
+        createHttpError(404, `Post with the id: ${req.params._id} not found.`)
       )
     }
   } catch (error) {
@@ -51,8 +51,8 @@ blogPostsRouter.get("/:_id", (req, res, next) => {
 
 blogPostsRouter.post("/", blogPostValidation, (req, res, next) => {
   try {
-    const errorsList = validationResult(req)
-    if (errorsList.isEmpty()) {
+    const errorList = validationResult(req)
+    if (errorList.isEmpty()) {
       const posts = readContent(blogPostsJSONPath)
       const newPost = { _id: uniqid(), createdAt: new Date(), ...req.body }
 
@@ -61,17 +61,18 @@ blogPostsRouter.post("/", blogPostValidation, (req, res, next) => {
 
       res.status(201).send(newPost)
     } else {
-      next(createHttpError(400, { errorsList }))
+      next(createHttpError(400, { errorList }))
     }
   } catch (error) {
+    console.log(error)
     next(error)
   }
 })
 
 blogPostsRouter.put("/:_id", blogPostValidation, (req, res, next) => {
   try {
-    const errorsList = validationResult(req)
-    if (errorsList.isEmpty()) {
+    const errorList = validationResult(req)
+    if (errorList.isEmpty()) {
       const posts = readContent(blogPostsJSONPath)
       const postToUpdate = posts.find((p) => p._id === req.params._id)
 
@@ -84,7 +85,7 @@ blogPostsRouter.put("/:_id", blogPostValidation, (req, res, next) => {
 
       res.send(updatedPost)
     } else {
-      next(createHttpError(400, { errorsList }))
+      next(createHttpError(400, { errorList }))
     }
   } catch (error) {
     next(error)
@@ -103,7 +104,10 @@ blogPostsRouter.delete("/:_id", (req, res, next) => {
       res.send(post)
     } else {
       next(
-        createHttpError(404, `Post with the id:${req.params._id} was not found`)
+        createHttpError(
+          404,
+          `Post with the id: ${req.params._id} was not found`
+        )
       )
     }
   } catch (error) {

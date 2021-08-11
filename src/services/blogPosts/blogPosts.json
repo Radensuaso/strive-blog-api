@@ -1,15 +1,1 @@
-[
-  {
-    "category": "Accomplishments",
-    "title": "You measure...",
-    "cover": "https://picsum.photos/500/300",
-    "readTime": { "value": 1, "unit": "minute" },
-    "author": {
-      "name": "Booker T. Washington",
-      "avatar": "https://i.pravatar.cc/300"
-    },
-    "content": "You measure the size of the accomplishment by the obstacles you had to overcome to reach your goals…",
-    "_id": "qd3vyocoks7lsdx6",
-    "createdAt": "2021-08-11T14:44:06.905Z"
-  }
-]
+[{"category":"Accomplishments","title":"You measure...","cover":"https://picsum.photos/500/300","readTime":{"value":1,"unit":"minute"},"author":{"name":"Booker T. Washington","avatar":"https://i.pravatar.cc/300"},"content":"You measure the size of the accomplishment by the obstacles you had to overcome to reach your goals…","_id":"qd3vyocoks7lsdx6","createdAt":"2021-08-11T14:44:06.905Z"},{"category":"Accomplishments","title":"You measure...","cover":"https://picsum.photos/500/300","readTime":{"value":1,"unit":"minute"},"author":{"name":"Booker T. Washington","avatar":"https://i.pravatar.cc/300"},"content":"You measure the size of the accomplishment by the obstacles you had to overcome to reach your goals…","_id":"qd3vyocoks7n0twl","createdAt":"2021-08-11T15:18:40.485Z"},{"category":"Accomplishments","title":"You measure...","cover":"https://picsum.photos/500/300","readTime":{"value":1,"unit":"minute"},"author":{"name":"Booker T. Washington","avatar":"https://i.pravatar.cc/300"},"content":"You measure the size of the accomplishment by the obstacles you had to overcome to reach your goals…","_id":"qd3vy8osks7n4lm4","createdAt":"2021-08-11T15:21:36.363Z"}]

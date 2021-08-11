@@ -4,7 +4,8 @@ import { dirname, join } from "path"
 import uniqid from "uniqid"
 import createHttpError from "http-errors"
 import { readContent, writeContent } from "../../functions/readAndWrite.js"
-import { blogPostValidation } from "./validation"
+import { validationResult } from "express-validator"
+import { blogPostValidation } from "./validation.js"
 
 const blogPostsJSONPath = join(
   dirname(fileURLToPath(import.meta.url)),
@@ -37,16 +38,29 @@ blogPostsRouter.get("/:_id", (req, res, next) => {
     if (post) {
       res.send(post)
     } else {
-      res.send(createHttpError(404, `404 post with the id:${req.params._id}`))
+      res.send(
+        createHttpError(404, `Post with the id:${req.params._id} not found.`)
+      )
     }
   } catch (error) {
     next(error)
   }
 })
 
-blogPostsRouter.post("/", (req, res, next) => {
+blogPostsRouter.post("/", blogPostValidation, (req, res, next) => {
   try {
-    res.status(201).send("here it is")
+    const errorsList = validationResult(req)
+    if (errorsList.isEmpty()) {
+      const posts = readContent(blogPostsJSONPath)
+      const newPost = { ...req.body, _id: uniqid(), createdAt: new Date() }
+
+      posts.push(newPost)
+      writeContent(blogPostsJSONPath, posts)
+
+      res.status(201).send(newPost)
+    } else {
+      next(createHttpError(400, { errorsList }))
+    }
   } catch (error) {
     next(error)
   }

@@ -1,0 +1,18 @@
+[
+  {
+    "_id": "121sad5141sd1",
+    "category": "Accomplishments",
+    "title": "You measure...",
+    "cover": "https://picsum.photos/500/300",
+    "readTime": {
+      "value": 1,
+      "unit": "minute"
+    },
+    "author": {
+      "name": "Booker T. Washington",
+      "avatar": "https://i.pravatar.cc/300"
+    },
+    "content": "You measure the size of the accomplishment by the obstacles you had to overcome to reach your goals…",
+    "createdAt": "2021-08-10T16:00:30.809Z"
+  }
+]

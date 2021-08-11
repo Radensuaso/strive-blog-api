@@ -18,11 +18,13 @@ blogPostsRouter.get("/", (req, res, next) => {
   try {
     const posts = readContent(blogPostsJSONPath)
 
-    if (req.query && req.query.category) {
-      const categoryPosts = posts.filter((post) =>
-        post.category.includes(req.query.category)
+    if (req.query && req.query.title) {
+      const filteredPosts = posts.filter((post) =>
+        post.title
+          .toLocaleLowerCase()
+          .includes(req.query.title.toLocaleLowerCase())
       )
-      res.send(categoryPosts)
+      res.send(filteredPosts)
     } else {
       res.send(posts)
     }
@@ -52,7 +54,7 @@ blogPostsRouter.post("/", blogPostValidation, (req, res, next) => {
     const errorsList = validationResult(req)
     if (errorsList.isEmpty()) {
       const posts = readContent(blogPostsJSONPath)
-      const newPost = { ...req.body, _id: uniqid(), createdAt: new Date() }
+      const newPost = { _id: uniqid(), createdAt: new Date(), ...req.body }
 
       posts.push(newPost)
       writeContent(blogPostsJSONPath, posts)
@@ -66,9 +68,24 @@ blogPostsRouter.post("/", blogPostValidation, (req, res, next) => {
   }
 })
 
-blogPostsRouter.put("/:_id", (req, res, next) => {
+blogPostsRouter.put("/:_id", blogPostValidation, (req, res, next) => {
   try {
-    res.send("here it is")
+    const errorsList = validationResult(req)
+    if (errorsList.isEmpty()) {
+      const posts = readContent(blogPostsJSONPath)
+      const postToUpdate = posts.find((p) => p._id === req.params._id)
+
+      const updatedPost = { ...postToUpdate, ...req.body }
+
+      const remainingPosts = posts.filter((p) => p._id !== req.params._id)
+
+      remainingPosts.push(updatedPost)
+      writeContent(blogPostsJSONPath, remainingPosts)
+
+      res.send(updatedPost)
+    } else {
+      next(createHttpError(400, { errorsList }))
+    }
   } catch (error) {
     next(error)
   }
@@ -76,7 +93,19 @@ blogPostsRouter.put("/:_id", (req, res, next) => {
 
 blogPostsRouter.delete("/:_id", (req, res, next) => {
   try {
-    res.status(204).send("here it is")
+    const posts = readContent(blogPostsJSONPath)
+    const post = posts.find((p) => p._id === req.params._id)
+    if (post) {
+      const remainingPosts = posts.filter((p) => p._id !== req.params._id)
+
+      writeContent(blogPostsJSONPath, remainingPosts)
+
+      res.send(post)
+    } else {
+      next(
+        createHttpError(404, `Post with the id:${req.params._id} was not found`)
+      )
+    }
   } catch (error) {
     next(error)
   }

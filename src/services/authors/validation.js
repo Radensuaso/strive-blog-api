@@ -5,5 +5,4 @@ export const authorsValidation = [
   body("surname").exists().withMessage("Surname is a mandatory field!"),
   body("email").isEmail().withMessage("Must be a valid email!"),
   body("birthDate").exists().withMessage("Birth Date is a mandatory field!"),
-  body("avatar").exists().withMessage("Avatar is a mandatory field!"),
 ]

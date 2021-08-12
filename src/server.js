@@ -9,16 +9,19 @@ import {
   forbiddenHandler,
   genericServerErrorHandler,
 } from "./errorHandlers.js"
+import { join } from "path"
 
 const server = express() //our server function initialized with express()
 const port = 3001 // this will be the port on with the server will run
+const publicFolderPath = join(process.cwd(), "public")
+console.log(publicFolderPath)
 
 //=========== GLOBAL MIDDLEWARES ======================
+server.use(express.static(publicFolderPath)) //grants access to the public folder in the url
 server.use(cors())
 server.use(express.json()) // this will enable reading of the bodies of requests, THIS HAS TO BE BEFORE server.use("/authors", authorsRouter)
 
 // ========== ROUTES =======================
-
 server.use("/authors", authorsRouter)
 server.use("/blogPosts", blogPostsRouter) // this will provide the endpoints of authors with a common name to POST, GET, PUT and DELETE
 

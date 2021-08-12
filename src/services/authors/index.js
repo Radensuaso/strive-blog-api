@@ -1,9 +1,10 @@
 import express from "express"
-import { readAuthors, writeAuthors } from "../../lib/fs-tools.js"
+import { readAuthors, writeAuthors, saveAvatar } from "../../lib/fs-tools.js"
 import uniqid from "uniqid"
 import createHttpError from "http-errors"
 import { validationResult } from "express-validator"
 import { authorsValidation } from "./validation.js"
+import multer from "multer"
 
 const authorsRouter = express.Router() // provide Routing
 
@@ -30,13 +31,14 @@ authorsRouter.get("/", async (req, res, next) => {
 
 authorsRouter.get("/:_id", async (req, res, next) => {
   try {
+    const paramsId = req.params._id
     const authors = await readAuthors()
-    const author = authors.find((a) => a._id === req.params._id)
+    const author = authors.find((a) => a._id === paramsId)
     if (author) {
       res.send(author)
     } else {
       res.send(
-        createHttpError(404, `Author with the id: ${req.params._id} not found.`)
+        createHttpError(404, `Author with the id: ${paramsId} not found.`)
       )
     }
   } catch (error) {
@@ -64,16 +66,46 @@ authorsRouter.post("/", authorsValidation, async (req, res, next) => {
   }
 })
 
+authorsRouter.post(
+  "/:_id/uploadAvatar",
+  multer().single("avatar"),
+  async (req, res, next) => {
+    try {
+      const paramsId = req.params._id
+      const authors = await readAuthors()
+      const author = authors.find((a) => a._id === paramsId)
+      if (author) {
+        await saveAvatar(`${paramsId}.jpg`, req.file.buffer)
+        res.send("Avatar uploaded!")
+        const avatarUrl = `http://${req.get("host")}/img/authors/${
+          author._id
+        }.jpg`
+        const remainingAuthors = authors.filter((a) => a._id !== paramsId)
+        const updatedAuthor = { ...author, avatar: avatarUrl }
+        remainingAuthors.push(updatedAuthor)
+        await writeAuthors(remainingAuthors)
+      } else {
+        next(
+          createHttpError(404, `Author with the id: ${paramsId} was not found.`)
+        )
+      }
+    } catch (error) {
+      next(error)
+    }
+  }
+)
+
 authorsRouter.put("/:_id", authorsValidation, async (req, res, next) => {
   try {
+    const paramsId = req.params._id
     const errorList = validationResult(req)
     if (errorList.isEmpty()) {
       const authors = await readAuthors()
-      const authorToUpdate = authors.find((a) => a._id === req.params._id)
+      const authorToUpdate = authors.find((a) => a._id === paramsId)
 
       const updatedAuthor = { ...authorToUpdate, ...req.body }
 
-      const remainingAuthors = authors.filter((a) => a._id !== req.params._id)
+      const remainingAuthors = authors.filter((a) => a._id !== paramsId)
 
       remainingAuthors.push(updatedAuthor)
       await writeAuthors(remainingAuthors)
@@ -89,10 +121,11 @@ authorsRouter.put("/:_id", authorsValidation, async (req, res, next) => {
 
 authorsRouter.delete("/:_id", async (req, res, next) => {
   try {
+    const paramsId = req.params._id
     const authors = await readAuthors()
-    const author = authors.find((a) => a._id === req.params._id)
+    const author = authors.find((a) => a._id === paramsId)
     if (author) {
-      const remainingAuthors = authors.filter((a) => a._id !== req.params._id)
+      const remainingAuthors = authors.filter((a) => a._id !== paramsId)
 
       await writeAuthors(remainingAuthors)
 
@@ -104,7 +137,7 @@ authorsRouter.delete("/:_id", async (req, res, next) => {
       next(
         createHttpError(
           404,
-          `The author with the id: ${req.params._id} was not found`
+          `The author with the id: ${paramsId} was not found`
         )
       )
     }

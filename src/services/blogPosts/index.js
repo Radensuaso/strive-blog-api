@@ -1,5 +1,5 @@
-import { readBlogPosts, writeBlogPosts } from "../../lib/fs-tools.js"
 import express from "express"
+import { readBlogPosts, writeBlogPosts } from "../../lib/fs-tools.js"
 import uniqid from "uniqid"
 import createHttpError from "http-errors"
 import { validationResult } from "express-validator"

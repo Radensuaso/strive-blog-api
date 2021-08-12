@@ -1,22 +1,16 @@
+import { readBlogPosts, writeBlogPosts } from "../../lib/fs-tools.js"
 import express from "express"
-import { fileURLToPath } from "url"
-import { dirname, join } from "path"
 import uniqid from "uniqid"
 import createHttpError from "http-errors"
-import { readContent, writeContent } from "../../functions/readAndWrite.js"
 import { validationResult } from "express-validator"
 import { blogPostValidation } from "./validation.js"
 
-const blogPostsJSONPath = join(
-  dirname(fileURLToPath(import.meta.url)),
-  "blogPosts.json"
-) // get the path the json file
-
 const blogPostsRouter = express.Router() // provide Routing
 
-blogPostsRouter.get("/", (req, res, next) => {
+blogPostsRouter.get("/", async (req, res, next) => {
   try {
-    const posts = readContent(blogPostsJSONPath)
+    const posts = await readBlogPosts()
+    console.log(posts)
 
     if (req.query && req.query.title) {
       const filteredPosts = posts.filter((post) =>
@@ -29,13 +23,14 @@ blogPostsRouter.get("/", (req, res, next) => {
       res.send(posts)
     }
   } catch (error) {
+    console.log(error)
     next(error)
   }
 })
 
-blogPostsRouter.get("/:_id", (req, res, next) => {
+blogPostsRouter.get("/:_id", async (req, res, next) => {
   try {
-    const posts = readContent(blogPostsJSONPath)
+    const posts = await readBlogPosts()
     const post = posts.find((p) => p._id === req.params._id)
     if (post) {
       res.send(post)
@@ -49,15 +44,15 @@ blogPostsRouter.get("/:_id", (req, res, next) => {
   }
 })
 
-blogPostsRouter.post("/", blogPostValidation, (req, res, next) => {
+blogPostsRouter.post("/", blogPostValidation, async (req, res, next) => {
   try {
     const errorList = validationResult(req)
     if (errorList.isEmpty()) {
-      const posts = readContent(blogPostsJSONPath)
+      const posts = await readBlogPosts()
       const newPost = { _id: uniqid(), createdAt: new Date(), ...req.body }
 
       posts.push(newPost)
-      writeContent(blogPostsJSONPath, posts)
+      await writeBlogPosts(posts)
 
       res.status(201).send(newPost)
     } else {
@@ -69,11 +64,11 @@ blogPostsRouter.post("/", blogPostValidation, (req, res, next) => {
   }
 })
 
-blogPostsRouter.put("/:_id", blogPostValidation, (req, res, next) => {
+blogPostsRouter.put("/:_id", blogPostValidation, async (req, res, next) => {
   try {
     const errorList = validationResult(req)
     if (errorList.isEmpty()) {
-      const posts = readContent(blogPostsJSONPath)
+      const posts = await readBlogPosts()
       const postToUpdate = posts.find((p) => p._id === req.params._id)
 
       const updatedPost = { ...postToUpdate, ...req.body }
@@ -81,7 +76,7 @@ blogPostsRouter.put("/:_id", blogPostValidation, (req, res, next) => {
       const remainingPosts = posts.filter((p) => p._id !== req.params._id)
 
       remainingPosts.push(updatedPost)
-      writeContent(blogPostsJSONPath, remainingPosts)
+      await writeBlogPosts(remainingPosts)
 
       res.send(updatedPost)
     } else {
@@ -92,16 +87,19 @@ blogPostsRouter.put("/:_id", blogPostValidation, (req, res, next) => {
   }
 })
 
-blogPostsRouter.delete("/:_id", (req, res, next) => {
+blogPostsRouter.delete("/:_id", async (req, res, next) => {
   try {
-    const posts = readContent(blogPostsJSONPath)
+    const posts = await readBlogPosts()
     const post = posts.find((p) => p._id === req.params._id)
     if (post) {
       const remainingPosts = posts.filter((p) => p._id !== req.params._id)
 
-      writeContent(blogPostsJSONPath, remainingPosts)
+      await writeBlogPosts(remainingPosts)
 
-      res.send(post)
+      res.send({
+        message: `The Post with the id: ${post._id} was deleted`,
+        post: post,
+      })
     } else {
       next(
         createHttpError(

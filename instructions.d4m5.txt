@@ -1,0 +1,50 @@
+Strive Blog API - 3
+
+
+You are in charge of creating a set of WebAPIs for the Strive Blog application.
+
+Here you can find the Frontend already created
+
+
+
+In this third "step" the application should enable file uploading and comments crud
+
+
+
+Backend
+Comments are going to be embedded in the corresponding blog post, so add a comments array on every post (empty at the beginning). They should contain just author name and text
+
+
+
+The backend should include the following routes:
+
+POST /authors/:id/uploadAvatar, uploads a picture (save as idOfTheAuthor.jpg in the public/img/authors folder) for the author specified by the id. Store the newly created URL into the corresponding author in authors.json
+POST /blogPosts/:id/uploadCover, uploads a picture (save as idOfTheBlogPost.jpg in the public/img/blogPosts folder) for the blog post specified by the id. Store the newly created URL into the corresponding post in blogPosts.json
+GET /blogPosts/:id/comments, get all the comments for a specific post
+POST /blogPosts/:id/comments, add a new comment to the specific post
+
+
+
+
+The persistence must be granted via file system
+
+
+
+Configure Express to use the public folder to serve static files
+
+
+
+
+
+FRONTEND
+The user should be able to upload a picture as an avatar
+The user should be able to upload a picture as a blog post cover
+
+
+
+
+
+
+Extra Features
+BE: Comments edit and delete
+FE: Post new comment on a blog post

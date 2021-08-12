@@ -20,7 +20,7 @@ server.use(express.json()) // this will enable reading of the bodies of requests
 // ========== ROUTES =======================
 
 server.use("/authors", authorsRouter)
-server.use("/blogposts", blogPostsRouter) // this will provide the endpoints of authors with a common name to POST, GET, PUT and DELETE
+server.use("/blogPosts", blogPostsRouter) // this will provide the endpoints of authors with a common name to POST, GET, PUT and DELETE
 
 // ============== ERROR HANDLING ==============
 

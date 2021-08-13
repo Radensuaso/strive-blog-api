@@ -3,28 +3,31 @@ import {
   readBlogPosts,
   writeBlogPosts,
   readAuthors,
+  saveCover,
+  removeCover,
 } from "../../lib/fs-tools.js";
 import uniqid from "uniqid";
 import createHttpError from "http-errors";
 import { validationResult } from "express-validator";
 import { blogPostValidation } from "./validation.js";
+import multer from "multer";
 
 const blogPostsRouter = express.Router(); // provide Routing
 
 blogPostsRouter.get("/", async (req, res, next) => {
   try {
-    const posts = await readBlogPosts();
-    console.log(posts);
+    const blogPosts = await readBlogPosts();
+    console.log(blogPosts);
 
     if (req.query && req.query.title) {
-      const filteredPosts = posts.filter((post) =>
+      const filteredBlogPosts = blogPosts.filter((post) =>
         post.title
           .toLocaleLowerCase()
           .includes(req.query.title.toLocaleLowerCase())
       );
-      res.send(filteredPosts);
+      res.send(filteredBlogPosts);
     } else {
-      res.send(posts);
+      res.send(blogPosts);
     }
   } catch (error) {
     console.log(error);
@@ -34,13 +37,14 @@ blogPostsRouter.get("/", async (req, res, next) => {
 
 blogPostsRouter.get("/:_id", async (req, res, next) => {
   try {
-    const posts = await readBlogPosts();
-    const post = posts.find((p) => p._id === req.params._id);
-    if (post) {
-      res.send(post);
+    const paramsID = req.params._id;
+    const blogPosts = await readBlogPosts();
+    const blogPost = blogPosts.find((p) => p._id === paramsID);
+    if (blogPost) {
+      res.send(blogPost);
     } else {
       res.send(
-        createHttpError(404, `Post with the id: ${req.params._id} not found.`)
+        createHttpError(404, `Blog post with the id: ${paramsID} not found.`)
       );
     }
   } catch (error) {
@@ -50,13 +54,12 @@ blogPostsRouter.get("/:_id", async (req, res, next) => {
 
 blogPostsRouter.post("/", blogPostValidation, async (req, res, next) => {
   try {
-    console.log(req.body);
     const errorList = validationResult(req);
     if (errorList.isEmpty()) {
       const authors = await readAuthors();
       const randomAuthor = authors[Math.floor(Math.random() * authors.length)];
-      const posts = await readBlogPosts();
-      const newPost = {
+      const blogPosts = await readBlogPosts();
+      const newBlogPost = {
         _id: uniqid(),
         createdAt: new Date(),
         readTime: { value: 1, unit: "minute" },
@@ -67,12 +70,12 @@ blogPostsRouter.post("/", blogPostValidation, async (req, res, next) => {
         ...req.body,
       };
 
-      posts.push(newPost);
-      await writeBlogPosts(posts);
+      blogPosts.push(newBlogPost);
+      await writeBlogPosts(blogPosts);
 
-      res.status(201).send(newPost);
+      res.status(201).send(newBlogPost);
     } else {
-      next(createHttpError(400, errorList));
+      next(createHttpError(400, { errorList }));
     }
   } catch (error) {
     console.log(error);
@@ -80,21 +83,54 @@ blogPostsRouter.post("/", blogPostValidation, async (req, res, next) => {
   }
 });
 
+blogPostsRouter.post(
+  "/:_id/uploadCover",
+  multer().single("cover"),
+  async (req, res, next) => {
+    try {
+      const paramsId = req.params._id;
+      const blogPosts = await readBlogPosts();
+      const blogPost = blogPosts.find((p) => p._id === paramsId);
+      if (blogPost) {
+        await saveCover(`${paramsId}.jpg`, req.file.buffer);
+        res.send("Cover uploaded!");
+        const coverUrl = `http://${req.get("host")}/img/blogPosts/${
+          blogPost._id
+        }.jpg`;
+        const remainingBlogPosts = blogPosts.filter((p) => p._id !== paramsId);
+        const updatedBlogPost = { ...blogPost, cover: coverUrl };
+        remainingBlogPosts.push(updatedBlogPost);
+        await writeBlogPosts(remainingBlogPosts);
+      } else {
+        next(
+          createHttpError(
+            404,
+            `Blog post with the id: ${paramsId} was not found.`
+          )
+        );
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
 blogPostsRouter.put("/:_id", blogPostValidation, async (req, res, next) => {
   try {
     const errorList = validationResult(req);
     if (errorList.isEmpty()) {
-      const posts = await readBlogPosts();
-      const postToUpdate = posts.find((p) => p._id === req.params._id);
+      const paramsID = req.params._id;
+      const blogPosts = await readBlogPosts();
+      const blogPostToUpdate = blogPosts.find((p) => p._id === paramsID);
 
-      const updatedPost = { ...postToUpdate, ...req.body };
+      const updatedBlogPost = { ...blogPostToUpdate, ...req.body };
 
-      const remainingPosts = posts.filter((p) => p._id !== req.params._id);
+      const remainingBlogPosts = blogPosts.filter((p) => p._id !== paramsID);
 
-      remainingPosts.push(updatedPost);
-      await writeBlogPosts(remainingPosts);
+      remainingBlogPosts.push(updatedBlogPost);
+      await writeBlogPosts(remainingBlogPosts);
 
-      res.send(updatedPost);
+      res.send(updatedBlogPost);
     } else {
       next(createHttpError(400, { errorList }));
     }
@@ -105,22 +141,24 @@ blogPostsRouter.put("/:_id", blogPostValidation, async (req, res, next) => {
 
 blogPostsRouter.delete("/:_id", async (req, res, next) => {
   try {
-    const posts = await readBlogPosts();
-    const post = posts.find((p) => p._id === req.params._id);
-    if (post) {
-      const remainingPosts = posts.filter((p) => p._id !== req.params._id);
+    const paramsID = req.params._id;
+    const blogPosts = await readBlogPosts();
+    const blogPost = blogPosts.find((p) => p._id === paramsID);
+    if (blogPost) {
+      const remainingBlogPosts = blogPosts.filter((p) => p._id !== paramsID);
 
-      await writeBlogPosts(remainingPosts);
+      await writeBlogPosts(remainingBlogPosts);
+      await removeCover(`${blogPost._id}.jpg`);
 
       res.send({
-        message: `The Post with the id: ${post._id} was deleted`,
-        post: post,
+        message: `The Blog post with the id: ${blogPost._id} was deleted`,
+        blogPost: blogPost,
       });
     } else {
       next(
         createHttpError(
           404,
-          `Post with the id: ${req.params._id} was not found`
+          `The blog post with the id: ${paramsID} was not found`
         )
       );
     }

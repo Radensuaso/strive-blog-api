@@ -10,7 +10,7 @@ export const notFoundHandler = (err, req, res, next) => {
 export const badRequestHandler = (err, req, res, next) => {
   if (err.status === 400) {
     console.log(err);
-    res.status(400).send(err.message);
+    res.status(400).send(err.errorList);
   } else {
     next(err);
   }

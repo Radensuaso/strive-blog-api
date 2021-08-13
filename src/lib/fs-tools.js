@@ -35,3 +35,5 @@ export const writeBlogPosts = (content) =>
   writeJSON(blogPostsJSONPath, content);
 export const saveCover = (fileName, content) =>
   writeFile(join(blogPostsFolderPath, fileName), content);
+export const removeCover = (fileName) =>
+  remove(join(blogPostsFolderPath, fileName));

@@ -53,7 +53,6 @@ authorsRouter.get("/:_id", async (req, res, next) => {
 
 authorsRouter.post("/", authorsValidation, async (req, res, next) => {
   try {
-    console.log(req.body);
     const errorList = validationResult(req);
     if (errorList.isEmpty()) {
       const authors = await readAuthors();

@@ -1,149 +1,156 @@
-import express from "express"
-import { readAuthors, writeAuthors, saveAvatar } from "../../lib/fs-tools.js"
-import uniqid from "uniqid"
-import createHttpError from "http-errors"
-import { validationResult } from "express-validator"
-import { authorsValidation } from "./validation.js"
-import multer from "multer"
+import express from "express";
+import {
+  readAuthors,
+  writeAuthors,
+  saveAvatar,
+  removeAvatar,
+} from "../../lib/fs-tools.js";
+import uniqid from "uniqid";
+import createHttpError from "http-errors";
+import { validationResult } from "express-validator";
+import { authorsValidation } from "./validation.js";
+import multer from "multer";
 
-const authorsRouter = express.Router() // provide Routing
+const authorsRouter = express.Router(); // provide Routing
 
 authorsRouter.get("/", async (req, res, next) => {
   try {
-    const authors = await readAuthors()
-    console.log(authors)
+    const authors = await readAuthors();
+    console.log(authors);
 
     if (req.query && req.query.name) {
       const filteredAuthors = authors.filter((author) =>
         author.name
           .toLocaleLowerCase()
           .includes(req.query.name.toLocaleLowerCase())
-      )
-      res.send(filteredAuthors)
+      );
+      res.send(filteredAuthors);
     } else {
-      res.send(authors)
+      res.send(authors);
     }
   } catch (error) {
-    console.log(error)
-    next(error)
+    console.log(error);
+    next(error);
   }
-})
+});
 
 authorsRouter.get("/:_id", async (req, res, next) => {
   try {
-    const paramsId = req.params._id
-    const authors = await readAuthors()
-    const author = authors.find((a) => a._id === paramsId)
+    const paramsId = req.params._id;
+    const authors = await readAuthors();
+    const author = authors.find((a) => a._id === paramsId);
     if (author) {
-      res.send(author)
+      res.send(author);
     } else {
       res.send(
         createHttpError(404, `Author with the id: ${paramsId} not found.`)
-      )
+      );
     }
   } catch (error) {
-    next(error)
+    next(error);
   }
-})
+});
 
 authorsRouter.post("/", authorsValidation, async (req, res, next) => {
   try {
-    const errorList = validationResult(req)
+    console.log(req.body);
+    const errorList = validationResult(req);
     if (errorList.isEmpty()) {
-      const authors = await readAuthors()
-      const newAuthor = { _id: uniqid(), createdAt: new Date(), ...req.body }
+      const authors = await readAuthors();
+      const newAuthor = { _id: uniqid(), createdAt: new Date(), ...req.body };
 
-      authors.push(newAuthor)
-      await writeAuthors(authors)
+      authors.push(newAuthor);
+      await writeAuthors(authors);
 
-      res.status(201).send(newAuthor)
+      res.status(201).send(newAuthor);
     } else {
-      next(createHttpError(400, { errorList }))
+      next(createHttpError(400, { errorList }));
     }
   } catch (error) {
-    console.log(error)
-    next(error)
+    console.log(error);
+    next(error);
   }
-})
+});
 
 authorsRouter.post(
   "/:_id/uploadAvatar",
   multer().single("avatar"),
   async (req, res, next) => {
     try {
-      const paramsId = req.params._id
-      const authors = await readAuthors()
-      const author = authors.find((a) => a._id === paramsId)
+      const paramsId = req.params._id;
+      const authors = await readAuthors();
+      const author = authors.find((a) => a._id === paramsId);
       if (author) {
-        await saveAvatar(`${paramsId}.jpg`, req.file.buffer)
-        res.send("Avatar uploaded!")
+        await saveAvatar(`${paramsId}.jpg`, req.file.buffer);
+        res.send("Avatar uploaded!");
         const avatarUrl = `http://${req.get("host")}/img/authors/${
           author._id
-        }.jpg`
-        const remainingAuthors = authors.filter((a) => a._id !== paramsId)
-        const updatedAuthor = { ...author, avatar: avatarUrl }
-        remainingAuthors.push(updatedAuthor)
-        await writeAuthors(remainingAuthors)
+        }.jpg`;
+        const remainingAuthors = authors.filter((a) => a._id !== paramsId);
+        const updatedAuthor = { ...author, avatar: avatarUrl };
+        remainingAuthors.push(updatedAuthor);
+        await writeAuthors(remainingAuthors);
       } else {
         next(
           createHttpError(404, `Author with the id: ${paramsId} was not found.`)
-        )
+        );
       }
     } catch (error) {
-      next(error)
+      next(error);
     }
   }
-)
+);
 
 authorsRouter.put("/:_id", authorsValidation, async (req, res, next) => {
   try {
-    const paramsId = req.params._id
-    const errorList = validationResult(req)
+    const paramsId = req.params._id;
+    const errorList = validationResult(req);
     if (errorList.isEmpty()) {
-      const authors = await readAuthors()
-      const authorToUpdate = authors.find((a) => a._id === paramsId)
+      const authors = await readAuthors();
+      const authorToUpdate = authors.find((a) => a._id === paramsId);
 
-      const updatedAuthor = { ...authorToUpdate, ...req.body }
+      const updatedAuthor = { ...authorToUpdate, ...req.body };
 
-      const remainingAuthors = authors.filter((a) => a._id !== paramsId)
+      const remainingAuthors = authors.filter((a) => a._id !== paramsId);
 
-      remainingAuthors.push(updatedAuthor)
-      await writeAuthors(remainingAuthors)
+      remainingAuthors.push(updatedAuthor);
+      await writeAuthors(remainingAuthors);
 
-      res.send(updatedAuthor)
+      res.send(updatedAuthor);
     } else {
-      next(createHttpError(400, { errorList }))
+      next(createHttpError(400, { errorList }));
     }
   } catch (error) {
-    next(error)
+    next(error);
   }
-})
+});
 
 authorsRouter.delete("/:_id", async (req, res, next) => {
   try {
-    const paramsId = req.params._id
-    const authors = await readAuthors()
-    const author = authors.find((a) => a._id === paramsId)
+    const paramsId = req.params._id;
+    const authors = await readAuthors();
+    const author = authors.find((a) => a._id === paramsId);
     if (author) {
-      const remainingAuthors = authors.filter((a) => a._id !== paramsId)
+      const remainingAuthors = authors.filter((a) => a._id !== paramsId);
 
-      await writeAuthors(remainingAuthors)
+      await writeAuthors(remainingAuthors);
+      await removeAvatar(`${author._id}.jpg`);
 
       res.send({
         message: `The author with the id: ${author._id} was deleted`,
         author: author,
-      })
+      });
     } else {
       next(
         createHttpError(
           404,
           `The author with the id: ${paramsId} was not found`
         )
-      )
+      );
     }
   } catch (error) {
-    next(error)
+    next(error);
   }
-})
+});
 
-export default authorsRouter
+export default authorsRouter;

@@ -13,6 +13,8 @@ import multer from "multer";
 
 const authorsRouter = express.Router(); // provide Routing
 
+// =================== AUTHORS INFO ====================
+
 authorsRouter.get("/", async (req, res, next) => {
   try {
     const authors = await readAuthors();
@@ -71,35 +73,6 @@ authorsRouter.post("/", authorsValidation, async (req, res, next) => {
   }
 });
 
-authorsRouter.post(
-  "/:_id/uploadAvatar",
-  multer().single("avatar"),
-  async (req, res, next) => {
-    try {
-      const paramsId = req.params._id;
-      const authors = await readAuthors();
-      const author = authors.find((a) => a._id === paramsId);
-      if (author) {
-        await saveAvatar(`${paramsId}.jpg`, req.file.buffer);
-        res.send("Avatar uploaded!");
-        const avatarUrl = `http://${req.get("host")}/img/authors/${
-          author._id
-        }.jpg`;
-        const remainingAuthors = authors.filter((a) => a._id !== paramsId);
-        const updatedAuthor = { ...author, avatar: avatarUrl };
-        remainingAuthors.push(updatedAuthor);
-        await writeAuthors(remainingAuthors);
-      } else {
-        next(
-          createHttpError(404, `Author with the id: ${paramsId} was not found.`)
-        );
-      }
-    } catch (error) {
-      next(error);
-    }
-  }
-);
-
 authorsRouter.put("/:_id", authorsValidation, async (req, res, next) => {
   try {
     const paramsId = req.params._id;
@@ -151,5 +124,36 @@ authorsRouter.delete("/:_id", async (req, res, next) => {
     next(error);
   }
 });
+
+// =================== AUTHORS AVATAR ====================
+
+authorsRouter.post(
+  "/:_id/uploadAvatar",
+  multer().single("avatar"),
+  async (req, res, next) => {
+    try {
+      const paramsId = req.params._id;
+      const authors = await readAuthors();
+      const author = authors.find((a) => a._id === paramsId);
+      if (author) {
+        await saveAvatar(`${paramsId}.jpg`, req.file.buffer);
+        const avatarUrl = `http://${req.get("host")}/img/authors/${
+          author._id
+        }.jpg`;
+        const remainingAuthors = authors.filter((a) => a._id !== paramsId);
+        const updatedAuthor = { ...author, avatar: avatarUrl };
+        remainingAuthors.push(updatedAuthor);
+        await writeAuthors(remainingAuthors);
+        res.send("Avatar uploaded!");
+      } else {
+        next(
+          createHttpError(404, `Author with the id: ${paramsId} was not found.`)
+        );
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 
 export default authorsRouter;

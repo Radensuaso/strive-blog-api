@@ -24,6 +24,8 @@ const blogPostsFolderPath = join(
 // *************** AUTHORS ****************
 export const readAuthors = () => readJSON(authorsJSONPath);
 export const writeAuthors = (content) => writeJSON(authorsJSONPath, content);
+
+// Avatars
 export const saveAvatar = (fileName, content) =>
   writeFile(join(authorsAvatarsFolderPath, fileName), content);
 export const removeAvatar = (fileName) =>
@@ -33,6 +35,8 @@ export const removeAvatar = (fileName) =>
 export const readBlogPosts = () => readJSON(blogPostsJSONPath);
 export const writeBlogPosts = (content) =>
   writeJSON(blogPostsJSONPath, content);
+
+// Covers
 export const saveCover = (fileName, content) =>
   writeFile(join(blogPostsFolderPath, fileName), content);
 export const removeCover = (fileName) =>

@@ -18,7 +18,6 @@ const authorsRouter = express.Router(); // provide Routing
 authorsRouter.get("/", async (req, res, next) => {
   try {
     const authors = await readAuthors();
-    console.log(authors);
 
     if (req.query && req.query.name) {
       const filteredAuthors = authors.filter((author) =>

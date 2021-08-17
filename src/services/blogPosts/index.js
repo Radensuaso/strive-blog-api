@@ -3,9 +3,8 @@ import {
   readBlogPosts,
   writeBlogPosts,
   readAuthors,
-  saveCover,
-  removeCover,
-} from "../../lib/fs-tools.js";
+  saveCoverCloudinary,
+} from "../../lib/writeReadTools.js";
 import uniqid from "uniqid";
 import createHttpError from "http-errors";
 import { validationResult } from "express-validator";
@@ -119,7 +118,6 @@ blogPostsRouter.delete("/:_id", async (req, res, next) => {
       const remainingBlogPosts = blogPosts.filter((p) => p._id !== paramsID);
 
       await writeBlogPosts(remainingBlogPosts);
-      await removeCover(`${blogPost._id}.jpg`);
 
       res.send({
         message: `The Blog post with the id: ${blogPost._id} was deleted`,
@@ -141,19 +139,17 @@ blogPostsRouter.delete("/:_id", async (req, res, next) => {
 // =============== BLOG POSTS COVER =================
 blogPostsRouter.post(
   "/:_id/uploadCover",
-  multer().single("cover"),
+  multer({ storage: saveCoverCloudinary }).single("cover"),
   async (req, res, next) => {
     try {
       const paramsId = req.params._id;
       const blogPosts = await readBlogPosts();
       const blogPost = blogPosts.find((p) => p._id === paramsId);
       if (blogPost) {
-        await saveCover(`${paramsId}.jpg`, req.file.buffer);
-        const coverUrl = `http://${req.get("host")}/img/blogPosts/${
-          blogPost._id
-        }.jpg`;
-        const remainingBlogPosts = blogPosts.filter((p) => p._id !== paramsId);
+        const coverUrl = req.file.path;
         const updatedBlogPost = { ...blogPost, cover: coverUrl };
+        const remainingBlogPosts = blogPosts.filter((p) => p._id !== paramsId);
+
         remainingBlogPosts.push(updatedBlogPost);
         await writeBlogPosts(remainingBlogPosts);
         res.send("Cover uploaded!");

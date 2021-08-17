@@ -2,9 +2,8 @@ import express from "express";
 import {
   readAuthors,
   writeAuthors,
-  saveAvatar,
-  removeAvatar,
-} from "../../lib/fs-tools.js";
+  saveAvatarCloudinary,
+} from "../../lib/writeReadTools.js";
 import uniqid from "uniqid";
 import createHttpError from "http-errors";
 import { validationResult } from "express-validator";
@@ -105,7 +104,6 @@ authorsRouter.delete("/:_id", async (req, res, next) => {
       const remainingAuthors = authors.filter((a) => a._id !== paramsId);
 
       await writeAuthors(remainingAuthors);
-      await removeAvatar(`${author._id}.jpg`);
 
       res.send({
         message: `The author with the id: ${author._id} was deleted`,
@@ -128,19 +126,16 @@ authorsRouter.delete("/:_id", async (req, res, next) => {
 
 authorsRouter.post(
   "/:_id/uploadAvatar",
-  multer().single("avatar"),
+  multer({ storage: saveAvatarCloudinary }).single("avatar"),
   async (req, res, next) => {
     try {
       const paramsId = req.params._id;
       const authors = await readAuthors();
       const author = authors.find((a) => a._id === paramsId);
       if (author) {
-        await saveAvatar(`${paramsId}.jpg`, req.file.buffer);
-        const avatarUrl = `http://${req.get("host")}/img/authors/${
-          author._id
-        }.jpg`;
-        const remainingAuthors = authors.filter((a) => a._id !== paramsId);
+        const avatarUrl = req.file.path;
         const updatedAuthor = { ...author, avatar: avatarUrl };
+        const remainingAuthors = authors.filter((a) => a._id !== paramsId);
         remainingAuthors.push(updatedAuthor);
         await writeAuthors(remainingAuthors);
         res.send("Avatar uploaded!");

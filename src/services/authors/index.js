@@ -138,7 +138,7 @@ authorsRouter.post(
         const remainingAuthors = authors.filter((a) => a._id !== paramsId);
         remainingAuthors.push(updatedAuthor);
         await writeAuthors(remainingAuthors);
-        res.send("Avatar uploaded!");
+        res.send(updatedAuthor);
       } else {
         next(
           createHttpError(404, `Author with the id: ${paramsId} was not found.`)

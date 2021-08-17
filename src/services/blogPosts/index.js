@@ -152,7 +152,7 @@ blogPostsRouter.post(
 
         remainingBlogPosts.push(updatedBlogPost);
         await writeBlogPosts(remainingBlogPosts);
-        res.send("Cover uploaded!");
+        res.send(updatedBlogPost);
       } else {
         next(
           createHttpError(

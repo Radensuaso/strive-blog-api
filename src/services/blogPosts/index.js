@@ -5,7 +5,7 @@ import {
   readAuthors,
   saveCoverCloudinary,
 } from "../../lib/writeReadTools.js";
-import { getBlogPostPDFReadableStream } from "../../lib/makePdf.js";
+import { getBlogPostPDFReadableStream } from "../../lib/pdfMakeTools.js";
 import { pipeline } from "stream";
 import uniqid from "uniqid";
 import createHttpError from "http-errors";
@@ -243,7 +243,7 @@ blogPostsRouter.get("/:_id/downloadPDF", async (req, res, next) => {
         "Content-Disposition",
         "attachment; filename=blog-post.pdf"
       ); // this enables to download the pdf
-      const source = getBlogPostPDFReadableStream(blogPost);
+      const source = await getBlogPostPDFReadableStream(blogPost);
       const destination = res;
 
       pipeline(source, destination, (err) => {

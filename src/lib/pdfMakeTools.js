@@ -1,6 +1,12 @@
 import PdfPrinter from "pdfmake";
+import ImageDataURI from "image-data-uri";
 
-export const getBlogPostPDFReadableStream = (blogPost) => {
+const turnToBase64Format = async (url) => {
+  const urlBase64 = await ImageDataURI.encodeFromURL(url);
+  return urlBase64;
+};
+
+export const getBlogPostPDFReadableStream = async (blogPost) => {
   const fonts = {
     Roboto: {
       normal: "Helvetica",
@@ -10,10 +16,12 @@ export const getBlogPostPDFReadableStream = (blogPost) => {
     },
   };
   const printer = new PdfPrinter(fonts);
+  const base64Image = await turnToBase64Format(blogPost.cover);
 
   const docDefinition = {
     content: [
-      /* { image: blogPost.cover }, */
+      { image: base64Image, width: 510 },
+      "\n\n\n",
       {
         text: blogPost.title,
         style: "header",

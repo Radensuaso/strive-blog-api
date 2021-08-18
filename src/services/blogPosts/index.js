@@ -5,6 +5,8 @@ import {
   readAuthors,
   saveCoverCloudinary,
 } from "../../lib/writeReadTools.js";
+import { getBlogPostPDFReadableStream } from "../../lib/makePdf.js";
+import { pipeline } from "stream";
 import uniqid from "uniqid";
 import createHttpError from "http-errors";
 import { validationResult } from "express-validator";
@@ -229,5 +231,32 @@ blogPostsRouter.post(
     }
   }
 );
+
+// ================== DOWNLOAD BLOG POST AS PDF =================
+blogPostsRouter.get("/:_id/downloadPDF", async (req, res, next) => {
+  try {
+    const paramsID = req.params._id;
+    const blogPosts = await readBlogPosts();
+    const blogPost = blogPosts.find((p) => p._id === paramsID);
+    if (blogPost) {
+      res.setHeader(
+        "Content-Disposition",
+        "attachment; filename=blog-post.pdf"
+      ); // this enables to download the pdf
+      const source = getBlogPostPDFReadableStream(blogPost);
+      const destination = res;
+
+      pipeline(source, destination, (err) => {
+        if (err) next(err);
+      });
+    } else {
+      res.send(
+        createHttpError(404, `Blog post with the id: ${paramsID} not found.`)
+      );
+    }
+  } catch (error) {
+    next(error);
+  }
+});
 
 export default blogPostsRouter; // export Routing

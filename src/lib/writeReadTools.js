@@ -49,6 +49,7 @@ export const writeBlogPosts = (content) =>
 export const saveCoverCloudinary = new CloudinaryStorage({
   cloudinary,
   params: {
+    format: "png",
     folder: "striveBlog/covers",
   },
 });

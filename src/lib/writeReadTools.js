@@ -8,6 +8,7 @@ const {
   readJSON,
   writeJSON,
   writeFile,
+  readFile,
   remove,
   createReadStream,
   createWriteStream,
@@ -55,6 +56,7 @@ export const writeBlogPosts = (content) =>
   writeJSON(blogPostsJSONPath, content);
 
 export const writePDFStream = (path) => createWriteStream(path);
+export const readPDFFile = (path) => readFile(path);
 
 // Covers
 export const saveCoverCloudinary = new CloudinaryStorage({

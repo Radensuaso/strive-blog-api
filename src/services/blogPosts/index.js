@@ -271,8 +271,7 @@ blogPostsRouter.get("/:_id/sendEmail", async (req, res, next) => {
     const blogPost = blogPosts.find((p) => p._id === paramsID);
     if (blogPost) {
       const blogPostPDFPath = await generateBlogPostPDFAsync(blogPost);
-      sendEmail(blogPost, blogPostPDFPath);
-
+      await sendEmail(blogPost, blogPostPDFPath);
       res.send("Email sent!");
     } else {
       res.send(

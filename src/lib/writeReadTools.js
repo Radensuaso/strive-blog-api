@@ -55,8 +55,10 @@ export const readBlogPosts = () => readJSON(blogPostsJSONPath);
 export const writeBlogPosts = (content) =>
   writeJSON(blogPostsJSONPath, content);
 
+// email
 export const writePDFStream = (path) => createWriteStream(path);
 export const readPDFFile = (path) => readFile(path);
+export const deletePDFFile = (path) => remove(path);
 
 // Covers
 export const saveCoverCloudinary = new CloudinaryStorage({

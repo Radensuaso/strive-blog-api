@@ -4,6 +4,7 @@ import {
   writeBlogPosts,
   readAuthors,
   saveCoverCloudinary,
+  deletePDFFile,
 } from "../../lib/writeReadTools.js";
 import {
   getBlogPostPDFReadableStream,
@@ -272,6 +273,7 @@ blogPostsRouter.get("/:_id/sendEmail", async (req, res, next) => {
     if (blogPost) {
       const blogPostPDFPath = await generateBlogPostPDFAsync(blogPost);
       await sendEmail(blogPost, blogPostPDFPath);
+      await deletePDFFile(blogPostPDFPath);
       res.send("Email sent!");
     } else {
       res.send(

@@ -75,7 +75,7 @@ export const generateBlogPostPDFAsync = async (blogPost) => {
 
   pdfReadableStream.end();
 
-  const blogPath = join(blogPostsFolderPath, "BlogPost.pdf");
+  const blogPath = join(blogPostsFolderPath, `${blogPost._id}.pdf`);
   await asyncPipeline(pdfReadableStream, writePDFStream(blogPath));
   return blogPath;
 };

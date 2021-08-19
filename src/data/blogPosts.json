@@ -1,1 +1,16 @@
-[{"_id":"qd3vy9moksg4cmf2","createdAt":"2021-08-17T13:45:53.533Z","readTime":{"value":1,"unit":"minute"},"author":{"name":"Oscar Lowe","avatar":"https://res.cloudinary.com/dyytoyiwr/image/upload/v1629207921/striveBlog/avatars/updixthimknlngcwjuze.png"},"comments":[],"category":"Neck","title":"Gorgeous Uruguayo Director TCP","content":"Reprehenderit dolor sit in. Occaecati nisi dolorem. Quo aliquid corporis veniam dolore rerum placeat. Deleniti sit vero ullam ut dignissimos et fugiat.","cover":"https://res.cloudinary.com/dyytoyiwr/image/upload/v1629295703/striveBlog/covers/udzv1ajxzjgjyrqv2syb.png"}]
+[
+  {
+    "_id": "qd3vy9moksg4cmf2",
+    "createdAt": "2021-08-17T13:45:53.533Z",
+    "readTime": { "value": 1, "unit": "minute" },
+    "author": {
+      "name": "Oscar Lowe",
+      "avatar": "https://res.cloudinary.com/dyytoyiwr/image/upload/v1629207921/striveBlog/avatars/updixthimknlngcwjuze.png"
+    },
+    "comments": [],
+    "category": "Neck",
+    "title": "Gorgeous Uruguayo Director TCP",
+    "content": "Reprehenderit dolor sit in. Occaecati nisi dolorem. Quo aliquid corporis veniam dolore rerum placeat. Deleniti sit vero ullam ut dignissimos et fugiat.",
+    "cover": "https://res.cloudinary.com/dyytoyiwr/image/upload/v1629295703/striveBlog/covers/udzv1ajxzjgjyrqv2syb.png"
+  }
+]

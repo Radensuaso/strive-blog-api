@@ -4,7 +4,14 @@ import { dirname, join } from "path";
 import { v2 as cloudinary } from "cloudinary";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
 
-const { readJSON, writeJSON, writeFile, remove } = fs;
+const {
+  readJSON,
+  writeJSON,
+  writeFile,
+  remove,
+  createReadStream,
+  createWriteStream,
+} = fs;
 
 const authorsJSONPath = join(
   dirname(fileURLToPath(import.meta.url)),
@@ -18,19 +25,21 @@ const blogPostsJSONPath = join(
   dirname(fileURLToPath(import.meta.url)),
   "../data/blogPosts.json"
 );
-const blogPostsFolderPath = join(
+export const blogPostsFolderPath = join(
   dirname(fileURLToPath(import.meta.url)),
   "../../public/img/blogPosts"
 );
 
 // *************** AUTHORS ****************
 export const readAuthors = () => readJSON(authorsJSONPath);
+export const getAuthorsReadableStream = () => createReadStream(authorsJSONPath);
 export const writeAuthors = (content) => writeJSON(authorsJSONPath, content);
 
 // Avatars
 export const saveAvatarCloudinary = new CloudinaryStorage({
   cloudinary,
   params: {
+    format: "png",
     folder: "striveBlog/avatars",
   },
 }); // cloudinary method
@@ -44,6 +53,8 @@ export const removeAvatar = (fileName) =>
 export const readBlogPosts = () => readJSON(blogPostsJSONPath);
 export const writeBlogPosts = (content) =>
   writeJSON(blogPostsJSONPath, content);
+
+export const writePDFStream = (path) => createWriteStream(path);
 
 // Covers
 export const saveCoverCloudinary = new CloudinaryStorage({

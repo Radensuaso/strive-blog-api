@@ -5,8 +5,12 @@ import {
   readAuthors,
   saveCoverCloudinary,
 } from "../../lib/writeReadTools.js";
-import { getBlogPostPDFReadableStream } from "../../lib/pdfMakeTools.js";
+import {
+  getBlogPostPDFReadableStream,
+  generateBlogPostPDFAsync,
+} from "../../lib/pdfMakeTools.js";
 import { pipeline } from "stream";
+import { sendEmail } from "../../lib/emailMakeTools.js";
 import uniqid from "uniqid";
 import createHttpError from "http-errors";
 import { validationResult } from "express-validator";
@@ -249,6 +253,27 @@ blogPostsRouter.get("/:_id/downloadPDF", async (req, res, next) => {
       pipeline(source, destination, (err) => {
         if (err) next(err);
       });
+    } else {
+      res.send(
+        createHttpError(404, `Blog post with the id: ${paramsID} not found.`)
+      );
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
+// ================= SEND PDF AS EMAIL ======================
+blogPostsRouter.get("/:_id/sendEmail", async (req, res, next) => {
+  try {
+    const paramsID = req.params._id;
+    const blogPosts = await readBlogPosts();
+    const blogPost = blogPosts.find((p) => p._id === paramsID);
+    if (blogPost) {
+      const blogPostPDFPath = await generateBlogPostPDFAsync(blogPost);
+      sendEmail(blogPost, blogPostPDFPath);
+
+      res.send("Email sent!");
     } else {
       res.send(
         createHttpError(404, `Blog post with the id: ${paramsID} not found.`)

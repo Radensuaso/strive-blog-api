@@ -1,1 +1,47 @@
-[{"_id":"qd3vybroksg46zfi","createdAt":"2021-08-17T13:41:30.461Z","name":"Oscar","surname":"Lowe","email":"Nat68@yahoo.com","birthDate":"Wed Aug 26 2020 20:28:27 GMT+0100 (Western European Summer Time)","avatar":"https://res.cloudinary.com/dyytoyiwr/image/upload/v1629207921/striveBlog/avatars/updixthimknlngcwjuze.png"}]
+[
+  {
+    "_id": "qd3vybroksg46zfi",
+    "createdAt": "2021-08-17T13:41:30.461Z",
+    "name": "Oscar",
+    "surname": "Lowe",
+    "email": "Nat68@yahoo.com",
+    "birthDate": "Wed Aug 26 2020 20:28:27 GMT+0100 (Western European Summer Time)",
+    "avatar": "https://res.cloudinary.com/dyytoyiwr/image/upload/v1629375192/striveBlog/avatars/ejfxw8xveogixoespj1w.png"
+  },
+  {
+    "_id": "qd3vyjgkksivxedc",
+    "createdAt": "2021-08-19T12:13:24.863Z",
+    "name": "Rachelle",
+    "surname": "Hettinger",
+    "email": "Eloisa11@yahoo.com",
+    "birthDate": "Sun Jul 25 2021 12:52:47 GMT+0100 (Western European Summer Time)",
+    "avatar": "https://res.cloudinary.com/dyytoyiwr/image/upload/v1629375257/striveBlog/avatars/bnzgho5ryf01i1zijtrd.png"
+  },
+  {
+    "_id": "qd3vyjgkksivxg5p",
+    "createdAt": "2021-08-19T12:13:27.181Z",
+    "name": "Destiny",
+    "surname": "Prohaska",
+    "email": "Mercedes_Mills35@gmail.com",
+    "birthDate": "Sun Feb 07 2021 12:25:51 GMT+0000 (Western European Standard Time)",
+    "avatar": "https://res.cloudinary.com/dyytoyiwr/image/upload/v1629375278/striveBlog/avatars/xmwwvfrh5tglzajrxhnb.png"
+  },
+  {
+    "_id": "qd3vyjgkksivxi33",
+    "createdAt": "2021-08-19T12:13:29.679Z",
+    "name": "Angus",
+    "surname": "Romaguera",
+    "email": "Devan55@hotmail.com",
+    "birthDate": "Fri Feb 12 2021 05:14:53 GMT+0000 (Western European Standard Time)",
+    "avatar": "https://res.cloudinary.com/dyytoyiwr/image/upload/v1629375337/striveBlog/avatars/qksczrcuhj3crmzxrkwz.png"
+  },
+  {
+    "_id": "qd3vyjgkksivxjus",
+    "createdAt": "2021-08-19T12:13:31.972Z",
+    "name": "Rebeca",
+    "surname": "Parisian",
+    "email": "Reyna.Fadel@yahoo.com",
+    "birthDate": "Mon Aug 09 2021 00:56:25 GMT+0100 (Western European Summer Time)",
+    "avatar": "https://res.cloudinary.com/dyytoyiwr/image/upload/v1629375358/striveBlog/avatars/rni7uogttr5prm8zwje1.png"
+  }
+]
